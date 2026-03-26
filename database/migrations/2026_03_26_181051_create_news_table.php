@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('title', 255);
             $table->text('content');
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 
@@ -24,6 +26,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('news');
+        Schema::table('news', function ($table) {
+            $table->dropSoftDeletes();
+        });
     }
 };
