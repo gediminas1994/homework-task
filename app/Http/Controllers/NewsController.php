@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\News;
+use App\Http\Requests\StoreNewsRequest;
 
 class NewsController extends Controller
 {
@@ -18,14 +19,9 @@ class NewsController extends Controller
         return view('news.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreNewsRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-        ]);
-
-        News::create($validated);
+        News::create($request->validated());
         return redirect()->route('news.index');
     }
 
@@ -34,14 +30,9 @@ class NewsController extends Controller
         return view('news.edit', compact('news'));
     }
 
-    public function update(Request $request, News $news)
+    public function update(StoreNewsRequest $request, News $news)
     {
-        $validated = $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-        ]);
-
-        $news->update($validated);
+        $news->update($request->validated());
         return redirect()->route('news.index');
     }
 
