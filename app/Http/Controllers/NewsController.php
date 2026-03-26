@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\News;
 use App\Http\Requests\StoreNewsRequest;
+use App\Services\NewsService;
 
 class NewsController extends Controller
 {
+    protected NewsService $newsService;
+
+    public function __construct(NewsService $newsService){
+        $this->newsService = $newsService;
+    }
+
     public function index()
     {
-        $news = News::orderBy('created_at', 'desc')->paginate(3);
+        $news = $this->newsService->list(3);
         return view('news.index', compact('news'));
     }
 
@@ -21,7 +27,7 @@ class NewsController extends Controller
 
     public function store(StoreNewsRequest $request)
     {
-        News::create($request->validated());
+        $this->newsService->create($request->validated());
         return redirect()->route('news.index');
     }
 
@@ -32,13 +38,13 @@ class NewsController extends Controller
 
     public function update(StoreNewsRequest $request, News $news)
     {
-        $news->update($request->validated());
+        $this->newsService->update($news, $request->validated());
         return redirect()->route('news.index');
     }
 
     public function destroy(News $news)
     {
-        $news->delete();
+        $this->newsService->delete($news);
         return redirect()->route('news.index');
     }
 }
